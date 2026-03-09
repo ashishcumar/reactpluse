@@ -2,6 +2,7 @@ import { recordRender, setOnLoopDetected } from "./registry";
 import { patchCreateElement } from "./patchCreateElement";
 import { patchHooks, areHooksPatched } from "./patchHooks";
 import { openDebugPanel } from "./debugPanel";
+import { patchDispatcher } from "./patchDispatcher";
 
 export { recordRender };
 
@@ -35,7 +36,7 @@ export function enableReactPulse(options: { React: any }): void {
   
   // Then patch hooks to track state updates
   try {
-    patchHooks(options.React);
+    patchDispatcher(options.React);
     if (areHooksPatched()) {
       console.log("[ReactPulse] ✅ State update tracking enabled");
     }

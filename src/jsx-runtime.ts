@@ -3,11 +3,15 @@ import { jsx as realJsx, Fragment } from "react/jsx-runtime";
 
 function getComponentName(type: any): string {
   if (typeof type === "function") {
-    return type.displayName || type.name || "Anonymous";
+    const name = type.displayName || type.name;
+    if (!name || name === "Anonymous") return "";
+    return name;
   }
 
   if (typeof type === "object" && type !== null) {
-    return type.displayName || type.render?.name || "Anonymous";
+    const name = type.displayName || type.name;
+    if (!name || name === "Anonymous") return "";
+    return name;
   }
 
   return "";

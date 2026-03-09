@@ -1,13 +1,21 @@
 import { recordRender } from "./registry";
-import { jsxDEV as realJsxDEV, jsx as realJsx, Fragment } from "react/jsx-dev-runtime";
+import {
+  jsxDEV as realJsxDEV,
+  jsx as realJsx,
+  Fragment,
+} from "react/jsx-dev-runtime";
 
 function getComponentName(type: any): string {
   if (typeof type === "function") {
-    return type.displayName || type.name || "Anonymous";
+    const name = type.displayName || type.name;
+    if (!name || name === "Anonymous") return "";
+    return name;
   }
 
   if (typeof type === "object" && type !== null) {
-    return type.displayName || type.render?.name || "Anonymous";
+    const name = type.displayName || type.name;
+    if (!name || name === "Anonymous") return "";
+    return name;
   }
 
   return "";
@@ -19,7 +27,7 @@ export function jsxDEV(
   key: any,
   isStaticChildren: boolean,
   source?: any,
-  self?: any
+  self?: any,
 ) {
   const name = getComponentName(type);
 

@@ -1,10 +1,11 @@
 import { setCurrentComponent } from "./patchHooks";
 
+
 const wrappedComponents = new WeakMap<Function, Function>();
 
 export function patchCreateElement(
   React: { createElement: typeof import("react").createElement },
-  recordRender: (componentName: string, source: "component") => void
+  recordRender: (componentName: string, source: "component") => void,
 ): void {
   const originalCreateElement = React.createElement.bind(React);
 
@@ -16,22 +17,17 @@ export function patchCreateElement(
           Original.displayName || Original.name || "Anonymous";
 
         // 👇 REPLACE THIS ENTIRE wrapped FUNCTION
-        const wrapped = function (this: any, props: any, ...rest: any[]) {
-          // Set current component for hooks
+        const wrapped = function (props: any, ...rest: any[]) {
           setCurrentComponent(componentName);
-          
-          // Record the render
-          recordRender(componentName, "component");
-          
-          // Call the original component
+        
+          recordRender(componentName,"component");
+        
           const result = Original.apply(this, [props, ...rest]);
-          
-          // Clear synchronously - component has finished rendering
+        
           setCurrentComponent(null);
-          
+        
           return result;
         };
-        // 👆 REPLACE UP TO HERE
 
         wrapped.displayName = componentName;
 
@@ -43,6 +39,6 @@ export function patchCreateElement(
 
     return originalCreateElement.call(React, type, ...args);
   };
-  
+
   console.log("[ReactPulse] ✅ createElement patched successfully");
 }
